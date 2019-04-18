@@ -1,8 +1,12 @@
-Debian ISO :
+--------------
+| Debian ISO |
+--------------
 
 https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-9.8.0-amd64-netinst.iso
 
-VirtualBox :
+--------------
+| VirtualBox |
+--------------
 
 Create VM :
 - Name : debian
@@ -13,7 +17,12 @@ Create a virtual hard disk :
 - VDI, Dynamically allocated, 8.00 GB
 - Path : /sgoinfre/goinfre/Perso/$USER/debian.vdi
 
-Start VM :
+Start VM.
+
+-------------------
+| Virtual Machine |
+-------------------
+
 - Use Debian ISO and select Graphical Install
 - Default settings unless stated otherwise for the whole installation
 - Choose a root password
