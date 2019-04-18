@@ -19,9 +19,9 @@ Create a virtual hard disk :
 
 Start VM.
 
--------------------
-| Virtual Machine |
--------------------
+----------------
+| Installation |
+----------------
 
 - Use Debian ISO and select Graphical Install
 - Default settings unless stated otherwise for the whole installation
