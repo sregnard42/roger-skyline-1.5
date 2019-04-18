@@ -36,3 +36,21 @@ Start VM.
 - Software selection :
 	- SSH server
 	- standard system utilities
+
+---------
+| Setup |
+---------
+
+Sudo ::
+
+- log in as the non-root user
+- `su` to log in as root
+- `apt-get install sudo && apt-get install vim`
+- `vi /etc/sudoers`
+- add to the file :
+	username	ALL(ALL:ALL) ALL
+- you can now exit to go back to your non-root user and use sudo when you need root privileges
+
+Static IP ::
+
+
