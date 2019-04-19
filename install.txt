@@ -25,17 +25,17 @@ Start VM.
 | Installation |
 ----------------
 
-- Use Debian ISO and select Graphical Install
-- Default settings unless stated otherwise for the whole installation
-- Choose a root password
-- Create a non-root user
-- Partition :
+Use Debian ISO and select Graphical Install
+Default settings unless stated otherwise for the whole installation
+Choose a root password
+Create a non-root user
+Partition :
 	- Manual
 	- 4.6 GB on Mount point `/` (shows as 4.2G with `df -h` and 4.3G with `sudo fdisk -l`)
 	- 1.0 GB as swap area
 	- 3.0 GB on Mount point `/home`
-- Finish partitioning
-- Software selection :
+Finish partitioning
+Software selection :
 	- SSH server
 	- standard system utilities
 
@@ -43,30 +43,75 @@ Start VM.
 | Setup |
 ---------
 
+::::::::::
 :: Sudo ::
+::::::::::
 
-- Log in as the non-root user
-- `su` to log in as root
-- `apt-get install sudo && apt-get install vim`
-- `vi /etc/sudoers`
-- Add to the file :
-	username	ALL(ALL:ALL) ALL
-- You can now exit to go back to your non-root user and use sudo when you need root privileges
+Log in as the non-root user
+`su` to log in as root
+`apt-get install sudo && apt-get install vim`
+`vi /etc/sudoers`
+Add to the file :
+	username	ALL(ALL:ALL) ALiL
+You can now exit to go back to your non-root user and use sudo when you need root privileges
 
+:::::::::::::::
 :: Static IP ::
+:::::::::::::::
 
-- `sudo vi /etc/network/interfaces`
-- Remove or comment the already existing enp0s3 interface
-- Cluster 3 example :
-auto enp0s3
-allow-hotplug enp0s3
-iface enpo0s3 inet static
-	address 10.13.42.21 # Must be in the same network as host, and not already taken
-	netmask 255.255.255.252 # netmask /30
-	gateway 10.13.254.254 # Same as host
-	broadcast 10.13.255.255 # Same as host
-	dns-nameservers 10.52.1.42 # Same as host
-- 10.1X.0.0 is the network needed where X is the cluster
-- dns-nameservers is the same for cluster 1, 2 and 3
-- `sudo reboot`
-	
+`sudo vi /etc/network/interfaces`
+Remove or comment the already existing enp0s3 interface
+Cluster 3 example :
+`````````````````````````````````````````````````````````````````````````````````````````````
+	auto enp0s3
+	allow-hotplug enp0s3
+	iface enpo0s3 inet static
+		address 10.13.42.21 # Must be in the same network as host, and not already taken
+		netmask 255.255.255.252 # netmask /30
+		gateway 10.13.254.254 # Same as host
+		broadcast 10.13.255.255 # Same as host
+		dns-nameservers 10.52.1.42 # Same as host
+`````````````````````````````````````````````````````````````````````````````````````````````
+10.1X.0.0 is the network needed where X is the cluster
+dns-nameservers is the same for cluster 1, 2 and 3
+`sudo reboot`
+
+:::::::::	
+:: SSH ::
+:::::::::
+
+Server side :
+- `sudo vi /etc/ssh/sshd_config`
+- Uncomment 'Port 22' and replace it by 'Port 2222'
+- Uncomment 'PermitRootLogin' and replace 'prohibit-password' by 'no'
+- Uncomment 'PubkeyAuthentication yes'
+- `sudo service sshd restart`
+
+Client side :
+- `ssh-keygen`
+- `ssh-copy-id -i ~/.ssh/id_rsa.pub username@hostIP -p 2222`
+- `ssh username@hostIP -p 2222`
+
+::::::::::::::
+:: Firewall ::
+::::::::::::::
+
+:::::::::
+:: DOS ::
+:::::::::
+
+:::::::::::::::::::::
+:: Scan protection ::
+:::::::::::::::::::::
+
+::::::::::::::
+:: Services ::
+::::::::::::::
+
+:::::::::::::::::::
+:: Update Script ::
+:::::::::::::::::::
+
+:::::::::::::::::
+:: Cron Script ::
+:::::::::::::::::
