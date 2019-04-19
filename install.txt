@@ -17,6 +17,8 @@ Create a virtual hard disk :
 - VDI, Dynamically allocated, 8.00 GB
 - Path : /sgoinfre/goinfre/Perso/$USER/debian.vdi
 
+Settings -> Network -> Attached to: Bridged Adapter.
+
 Start VM.
 
 ----------------
@@ -43,14 +45,28 @@ Start VM.
 
 Sudo ::
 
-- log in as the non-root user
+- Log in as the non-root user
 - `su` to log in as root
 - `apt-get install sudo && apt-get install vim`
 - `vi /etc/sudoers`
-- add to the file :
+- Add to the file :
 	username	ALL(ALL:ALL) ALL
-- you can now exit to go back to your non-root user and use sudo when you need root privileges
+- You can now exit to go back to your non-root user and use sudo when you need root privileges
 
 Static IP ::
 
-
+- `vi /etc/network/interfaces`
+- Remove or comment the already existing enp0s3 interface
+- Cluster 3 example :
+auto enp0s3
+allow-hotplug enp0s3
+iface enpo0s3 inet static
+	address 10.13.42.21 # Must be in the same network as host, and not already taken
+	netmask 255.255.255.252 # netmask /30
+	gateway 10.13.254.254 # Same as host
+	broadcast 10.13.255.255 # Same as host
+	dns-nameservers 10.52.1.42 # Same as host
+- 10.1X.0.0 is the network needed where X is the cluster
+- dns-nameservers is the same for cluster 1, 2 and 3
+- `sudo reboot`
+	
