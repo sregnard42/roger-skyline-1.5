@@ -55,7 +55,7 @@ Start VM.
 
 :: Static IP ::
 
-- `vi /etc/network/interfaces`
+- `sudo vi /etc/network/interfaces`
 - Remove or comment the already existing enp0s3 interface
 - Cluster 3 example :
 auto enp0s3
