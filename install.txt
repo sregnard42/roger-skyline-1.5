@@ -244,6 +244,27 @@ ignoreregex =
 :: Scan protection ::
 :::::::::::::::::::::
 
+https://wiki.debian-fr.xyz/Portsentry
+
+/etc/portsentry/portsentry.conf
+BLOCK_UDP="1"
+BLOCK_TCP="1"
+
+/etc/default/portsentry
+TCP_MODE="atcp"
+UDP_MODE="audp"
+
+Test scanning from another machine :
+- `nmap -v -PN -p 0-2000,60000 TARGET_IP`
+
+Check if said machine was blocked :
+- `cat /etc/hosts.deny`
+- `ip r`
+
+Unblock machine :
+- Remove a line in /etc/hosts.deny
+- `ip r del SENDER_IP`
+
 ::::::::::::::
 :: Services ::
 ::::::::::::::
