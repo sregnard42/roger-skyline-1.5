@@ -52,7 +52,10 @@ Log in as the non-root user
 `apt-get install sudo && apt-get install vim`
 `vi /etc/sudoers`
 Add to the file :
-	username	ALL(ALL:ALL) ALiL
+```````````````````````````````````````````````````````````````````````````````
+username	ALL(ALL:ALL) ALL
+```````````````````````````````````````````````````````````````````````````````
+
 You can now exit to go back to your non-root user and use sudo when you need root privileges
 
 :::::::::::::::
@@ -62,16 +65,16 @@ You can now exit to go back to your non-root user and use sudo when you need roo
 `sudo vi /etc/network/interfaces`
 Remove or comment the already existing enp0s3 interface
 Cluster 3 example :
-`````````````````````````````````````````````````````````````````````````````````````````````
-	auto enp0s3
-	allow-hotplug enp0s3
-	iface enpo0s3 inet static
-		address 10.13.42.21 # Must be in the same network as host, and not already taken
-		netmask 255.255.255.252 # netmask /30
-		gateway 10.13.254.254 # Same as host
-		broadcast 10.13.255.255 # Same as host
-		dns-nameservers 10.52.1.42 # Same as host
-`````````````````````````````````````````````````````````````````````````````````````````````
+```````````````````````````````````````````````````````````````````````````````
+auto enp0s3
+allow-hotplug enp0s3
+iface enpo0s3 inet static
+	address 10.13.42.21 # In the same network as host, and not already taken
+	netmask 255.255.255.252 # netmask /30
+	gateway 10.13.254.254 # Same as host
+	broadcast 10.13.255.255 # Same as host
+	dns-nameservers 10.52.1.42 # Same as host
+```````````````````````````````````````````````````````````````````````````````
 10.1X.0.0 is the network needed where X is the cluster
 dns-nameservers is the same for cluster 1, 2 and 3
 `sudo reboot`
@@ -112,6 +115,52 @@ Client side :
 :: Update Script ::
 :::::::::::::::::::
 
+/etc/crontab
+```````````````````````````````````````````````````````````````````````````````
+0 4	* * 1	root    /etc/init.d/update_script.sh >> /var/log/update_script.log
+@reboot		root    /etc/init.d/update_script.sh >> /var/log/update_script.log
+```````````````````````````````````````````````````````````````````````````````
+
+update_script.sh :
+```````````````````````````````````````````````````````````````````````````````
+#! /bin/bash
+apt-get update && apt-get upgrade
+```````````````````````````````````````````````````````````````````````````````
+
 :::::::::::::::::
 :: Cron Script ::
 :::::::::::::::::
+
+observe_cron.sh
+```````````````````````````````````````````````````````````````````````````````
+#!/bin/bash
+
+# Last time /etc/crontab was modified (in seconds)
+last_modif=`ls -l /etc/crontab --time-style=+%s | cut -d' ' -f6`
+
+# Current time (in seconds)
+now=`date +%s`
+
+# Dfference between the two (in seconds)
+diff=`expr $now - $last_modif`
+
+# Dfference between the two (in hours)
+diff=`expr $diff / 3600`
+
+# Dfference between the two (in days)
+diff=`expr $diff / 24`
+
+# Is the difference in days lower than 1 ?
+# or
+# Has the file been modified in the last 24 hours ?
+if [ $diff -lt 1 ]; then
+		`sudo sendmail root@debian < /etc/init.d/observer_cron_mail.txt`
+		fi
+```````````````````````````````````````````````````````````````````````````````
+
+Write your own mail content in observer_cron_mail.txt
+
+/etc/crontab
+```````````````````````````````````````````````````````````````````````````````
+0 0	* * *	root	/etc/init.d/observe_cron.sh
+```````````````````````````````````````````````````````````````````````````````
