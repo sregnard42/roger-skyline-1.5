@@ -99,9 +99,146 @@ Client side :
 :: Firewall ::
 ::::::::::::::
 
+`sudo iptables -L`
+
+https://doc.ubuntu-fr.org/iptables
+https://wiki.debian.org/iptables
+http://blog.bashy.eu/2011/04/limiter-le-nombre-de-sessions-tcp-par-ip-ou-sous-reseau/
+
+/etc/network/if-pre-up.d/iptables
+```````````````````````````````````````````````````````````````````````````````
+#!/bin/bash
+
+iptables-restore < /etc/iptables.up.rules
+
+# Flush iptables
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+
+# Drop everything as default behavior
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+# Accepts all established inbound connections
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Allows SSH connections
+iptables -A INPUT -p tcp -i enp0s3 --dport 2222 -j ACCEPT
+
+# Allows HTTPS connections
+iptables -A INPUT -p tcp -i enp0s3 --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp -i enp0s3 --dport 443 -j ACCEPT
+
+# Allows OUTPUT on an opened connection
+iptables -A OUTPUT -m conntrack ! --ctstate INVALID -j ACCEPT
+
+# Allows all loopback traffic
+iptables -I INPUT -i lo -j ACCEPT
+
+# Log all INPUT and FORWARD
+iptables -A INPUT -j LOG
+iptables -A FORWARD -j LOG
+
+# Max 10 connections per IP per /20
+iptables -I INPUT -p tcp --dport 80 -m connlimit --connlimit-above 10 --connlimit-mask 20 -j DROP
+iptables -I INPUT -p tcp --dport 443 -m connlimit --connlimit-above 10 --connlimit-mask 20 -j DROP
+
+exit 0
+```````````````````````````````````````````````````````````````````````````````
+
+`sudo chmod +x /etc/network/if-pre-up.d/iptables`
+`/etc/network/if-pre-up.d/iptables`
+`sudo sh -c "iptables-save > /etc/iptables.up.rules"`
+
 :::::::::
 :: DOS ::
 :::::::::
+
+http://viruslocker.free.fr/?page_id=728
+
+`sudo apt-get install fail2ban`
+`sudo apt-get install apache2`
+
+/etc/fail2ban/jail.local
+```````````````````````````````````````````````````````````````````````````````
+[DEFAULT]
+destemail = login@student.42.fr
+sender = root@roger-skyline.fr
+
+[sshd]
+port = 2222
+enabled = true
+maxretry = 5
+findtime = 120
+bantime = 60
+
+[sshd-ddos]
+port = 2222
+enabled = true
+
+[recidive]
+enabled = true
+
+[apache]
+enabled = true
+port = http, https
+filter = apache-auth
+logpath = /var/log/apache2*/*error.log
+maxretry = 6
+findtime = 600
+
+[apache-noscript]
+enabled = true
+
+[apache-overflows]
+
+enabled  = true
+port     = http,https
+filter   = apache-overflows
+logpath  = /var/log/apache2*/*error.log
+maxretry = 2
+
+[apache-badbots]
+
+enabled  = true
+port     = http,https
+filter   = apache-badbots
+logpath  = /var/log/apache2*/*error.log
+maxretry = 2
+
+[http-get-dos]
+enabled = true
+port = http,https
+filter = http-get-dos
+logpath = /var/log/apache2/access.log
+maxretry = 100
+findtime = 300
+bantime = 300
+action = iptables[name=HTTP, port=http, protocol=tcp]
+```````````````````````````````````````````````````````````````````````````````
+
+/etc/fail2ban/filter.d/http-get-dos.conf
+```````````````````````````````````````````````````````````````````````````````
+[Definition]
+
+# Option: failregex
+# Note: This regex will match any GET entry in your logs, so basically all valid and not valid entries are a match.
+# You should set up in the jail.conf file, the maxretry and findtime carefully in order to avoid false positives.
+
+failregex = ^<HOST>.*« GET
+
+# Option: ignoreregex
+# Notes.: regex to ignore. If this regex matches, the line is ignored.
+# Values: TEXT
+#
+
+ignoreregex =
+```````````````````````````````````````````````````````````````````````````````
 
 :::::::::::::::::::::
 :: Scan protection ::
@@ -110,6 +247,22 @@ Client side :
 ::::::::::::::
 :: Services ::
 ::::::::::::::
+
+`systemctl list-units-files | grep enabled`
+`sudo systemctl disable XXXXXXX`
+
+apache2.service #Necessary for Web part
+autovt@.service #Necessary for using virtual terminals
+console-setup.service #Configuration for the console
+cron.service #Scheduled tasks
+fail2ban.service #Protection against DOS
+getty@.service #Necessary for login
+keyboard-setup.service #Configuration for the keyboard
+networking.service #Network
+ssh.service #Needed for SSH connection
+sshd.service #Needed for SSH connection
+
+Everything else disabled
 
 :::::::::::::::::::
 :: Update Script ::
