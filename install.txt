@@ -43,7 +43,7 @@ Start VM.
 | Setup |
 ---------
 
-Sudo ::
+:: Sudo ::
 
 - Log in as the non-root user
 - `su` to log in as root
@@ -53,7 +53,7 @@ Sudo ::
 	username	ALL(ALL:ALL) ALL
 - You can now exit to go back to your non-root user and use sudo when you need root privileges
 
-Static IP ::
+:: Static IP ::
 
 - `vi /etc/network/interfaces`
 - Remove or comment the already existing enp0s3 interface
