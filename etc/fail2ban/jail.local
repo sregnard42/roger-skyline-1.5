@@ -1,0 +1,54 @@
+[DEFAULT]
+destemail = sregnard@student.42.fr
+sender = root@roger-skyline.fr
+
+[sshd]
+port = 2222
+enabled = true
+maxretry = 5
+findtime = 120
+bantime = 60
+
+[sshd-ddos]
+port = 2222
+enabled = true
+
+[recidive]
+enabled = true
+
+[apache]
+enabled = true
+port = http, https
+filter = apache-auth
+logpath = /var/log/apache2*/*error.log
+maxretry = 6
+findtime = 600
+
+[apache-noscript]
+enabled = true
+
+[apache-overflows]
+
+enabled  = true
+port     = http,https
+filter   = apache-overflows
+logpath  = /var/log/apache2*/*error.log
+maxretry = 2
+
+[apache-badbots]
+
+enabled  = true
+port     = http,https
+filter   = apache-badbots
+logpath  = /var/log/apache2*/*error.log
+maxretry = 2
+
+[http-get-dos]
+enabled = true
+port = http,https
+filter = http-get-dos
+logpath = /var/log/apache2/access.log
+maxretry = 100
+findtime = 300
+bantime = 300
+action = iptables[name=HTTP, port=http, protocol=tcp]

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+iptables-restore < /etc/iptables.up.rules
+
+# Flush iptables
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+
+# Drop everything as default behavior
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+# Accepts all established inbound connections
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Allows SSH connections
+iptables -A INPUT -p tcp -i enp0s3 --dport 2222 -j ACCEPT
+
+# Allows HTTPS connections
+iptables -A INPUT -p tcp -i enp0s3 --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp -i enp0s3 --dport 443 -j ACCEPT
+
+# Allows OUTPUT on an opened connection
+iptables -A OUTPUT -m conntrack ! --ctstate INVALID -j ACCEPT
+
+# Allows all loopback traffic
+iptables -I INPUT -i lo -j ACCEPT
+
+# Log all INPUT and FORWARD
+iptables -A INPUT -j LOG
+iptables -A FORWARD -j LOG
+
+# Max 10 connections per IP per /20
+iptables -I INPUT -p tcp --dport 80 -m connlimit --connlimit-above 10 --connlimit-mask 20 -j DROP
+iptables -I INPUT -p tcp --dport 443 -m connlimit --connlimit-above 10 --connlimit-mask 20 -j DROP
+
+exit 0
