@@ -138,7 +138,6 @@ iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
 
 `sudo chmod +x /etc/network/if-pre-up.d/iptables`
 `/etc/network/if-pre-up.d/iptables`
-`sudo sh -c "iptables-save > /etc/iptables.up.rules"`
 
 :::::::::
 :: DOS ::
