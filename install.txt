@@ -49,7 +49,7 @@ Software selection :
 
 Log in as the non-root user
 `su` to log in as root
-`apt-get install sudo && apt-get install vim`
+`apt-get install sudo vim fail2ban apache2 -y`
 `vi /etc/sudoers`
 Add to the file :
 ```````````````````````````````````````````````````````````````````````````````
@@ -145,9 +145,6 @@ iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
 :::::::::
 
 http://viruslocker.free.fr/?page_id=728
-
-`sudo apt-get install fail2ban`
-`sudo apt-get install apache2`
 
 /etc/fail2ban/jail.local
 ```````````````````````````````````````````````````````````````````````````````
