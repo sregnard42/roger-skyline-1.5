@@ -103,7 +103,6 @@ Client side :
 
 https://doc.ubuntu-fr.org/iptables
 https://wiki.debian.org/iptables
-http://blog.bashy.eu/2011/04/limiter-le-nombre-de-sessions-tcp-par-ip-ou-sous-reseau/
 
 /etc/network/if-pre-up.d/iptables
 ```````````````````````````````````````````````````````````````````````````````
