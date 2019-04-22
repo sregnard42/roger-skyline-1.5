@@ -145,6 +145,7 @@ iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
 :::::::::
 
 http://viruslocker.free.fr/?page_id=728
+https://www.supinfo.com/articles/single/2660-proteger-votre-vps-apache-avec-fail2ban
 
 /etc/fail2ban/jail.local
 ```````````````````````````````````````````````````````````````````````````````
@@ -152,56 +153,73 @@ http://viruslocker.free.fr/?page_id=728
 destemail = login@student.42.fr
 sender = root@roger-skyline.fr
 
-[sshd]
-port = 2222
-enabled = true
-maxretry = 5
-findtime = 120
-bantime = 60
+# SSH
+# 3 retry ? > Ban for 15 minutes
+[ssh]
+enabled		= true
+port		= ssh
+filter		= sshd
+action		= iptables[name=SSH, port=ssh, protocol=tcp]
+maxretry	= 3
+bantime		= 900
 
-[sshd-ddos]
-port = 2222
-enabled = true
-
-[recidive]
-enabled = true
+# Protect against DOS attack
+# 360 requests in 2 mim > Ban for 10 minutes
+[http-get-dos]
+enabled		= true
+port		= http,https
+filter		= http-get-dos
+logpath		= /var/log/apache2/access.log
+maxretry	= 360
+findtime	= 120
+action		= iptables[name=HTTP, port=http, protocol=tcp]
+bantime		= 600
 
 [apache]
-enabled = true
-port = http, https
-filter = apache-auth
-logpath = /var/log/apache2*/*error.log
-maxretry = 6
-findtime = 600
+enabled		= true
+port		= http, https
+filter		= apache-auth
+logpath		= /var/log/apache2*/*error.log
+bantime		= 600
+maxretry	= 3
+findtime	= 600
 
 [apache-noscript]
-enabled = true
+enabled		= true
+port		= http,https
+filter		= apache-noscript
+logpath		= /var/log/apache2/*error.log
+bantime		= 600
+maxretry	= 3
+findtime	= 600
 
 [apache-overflows]
-
-enabled  = true
-port     = http,https
-filter   = apache-overflows
-logpath  = /var/log/apache2*/*error.log
-maxretry = 2
+enabled		= true
+port		= http,https
+filter		= apache-overflows
+logpath		= /var/log/apache2*/*error.log
+bantime		= 600
+maxretry	= 2
+findtime	= 600
 
 [apache-badbots]
+enabled		= true
+port		= http,https
+filter		= apache-badbots
+logpath		= /var/log/apache2*/*error.log
+bantime		= 600
+maxretry	= 2
+findtime	= 600
 
-enabled  = true
-port     = http,https
-filter   = apache-badbots
-logpath  = /var/log/apache2*/*error.log
-maxretry = 2
-
-[http-get-dos]
-enabled = true
-port = http,https
-filter = http-get-dos
-logpath = /var/log/apache2/access.log
-maxretry = 100
-findtime = 300
-bantime = 300
-action = iptables[name=HTTP, port=http, protocol=tcp]
+[apache-dos]
+enbled		= true
+port		= http,https
+filter		= apache-dos
+logpath		= /var/log/apache2/access.log
+bantime		= 600
+maxretry	= 300
+findtime	= 300
+action		= iptables[name=HTTP, port=http, protocol=tcp]
 ```````````````````````````````````````````````````````````````````````````````
 
 /etc/fail2ban/filter.d/http-get-dos.conf
