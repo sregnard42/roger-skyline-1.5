@@ -108,32 +108,43 @@ https://wiki.debian.org/iptables
 ```````````````````````````````````````````````````````````````````````````````
 #!/bin/bash
 
-# Flush iptables
-iptables -F
-iptables -X
-iptables -t nat -F
-iptables -t nat -X
-iptables -t mangle -F
-iptables -t mangle -X
+# Reset rules
+iptables		-F
+iptables		-X
+iptables -t nat		-F
+iptables -t nat		-X
+iptables -t mangle	-F
+iptables -t mangle	-X
 
 # Drop everything as default behavior
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
+iptables -P INPUT	DROP
+iptables -P OUTPUT	DROP
+iptables -P FORWARD 	DROP
 
-# Allows SSH connections
-iptables -A INPUT -p tcp -i enp0s3 --dport 2222 -j ACCEPT
+# Loopback
+iptables -A INPUT	-i lo						-j ACCEPT
+iptables -A OUTPUT	-o lo						-j ACCEPT
 
-# Allows HHTP and HTTPS connections
-iptables -A INPUT -p tcp -i enp0s3 --dport 80 -j ACCEPT
-iptables -A INPUT -p tcp -i enp0s3 --dport 443 -j ACCEPT
+# DNS
+iptables -A OUTPUT	-p tcp		--dport	53			-j ACCEPT
+iptables -A OUTPUT	-p udp		--dport	53			-j ACCEPT
 
-# Allows all loopback traffic
-iptables -I INPUT -i lo -j ACCEPT
+# SSH
+iptables -A INPUT	-p tcp		--dport	2222			-j ACCEPT
 
-# Allows traffic with an already opened connection
-iptables -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+# HHTP
+iptables -A OUTPUT 	-p tcp		--dport	80			-j ACCEPT
+
+# HHTPS
+iptables -A OUTPUT	-p tcp		--dport	443			-j ACCEPT
+
+# Ping
+iptables -A OUTPUT	-p icmp		--icmp-type echo-request	-j ACCEPT
+iptables -A INPUT	-p icmp		--icmp-type echo-reply		-j ACCEPT
+
+# Already established connections
+iptables -A INPUT	-m conntrack	--ctstate ESTABLISHED,RELATED	-j ACCEPT
+iptables -A OUTPUT	-m conntrack	--ctstate ESTABLISHED,RELATED	-j ACCEPT
 ```````````````````````````````````````````````````````````````````````````````
 
 `sudo chmod +x /etc/network/if-pre-up.d/iptables`
