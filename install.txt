@@ -156,7 +156,6 @@ iptables -A OUTPUT	-m conntrack	--ctstate ESTABLISHED,RELATED	-j ACCEPT
 :::::::::
 
 http://viruslocker.free.fr/?page_id=728
-https://www.supinfo.com/articles/single/2660-proteger-votre-vps-apache-avec-fail2ban
 
 /etc/fail2ban/jail.local
 ```````````````````````````````````````````````````````````````````````````````
@@ -173,25 +172,6 @@ filter		= sshd
 action		= iptables[name=SSH, port=ssh, protocol=tcp]
 maxretry	= 3
 bantime		= 900
-
-# Protect against DOS attack
-# 360 requests in 2 min ? Ban for 10 minutes
-[http-get-dos]
-enabled		= true
-port		= http,https
-filter		= http-get-dos
-action		= iptables[name=HTTP, port=http, protocol=tcp]
-logpath		= /var/log/apache2/access.log
-maxretry	= 360
-findtime	= 120
-bantime		= 600
-```````````````````````````````````````````````````````````````````````````````
-
-/etc/fail2ban/filter.d/http-get-dos.conf
-```````````````````````````````````````````````````````````````````````````````
-[Definition]
-failregex = ^<HOST>.*« GET
-ignoreregex =
 ```````````````````````````````````````````````````````````````````````````````
 
 :::::::::::::::::::::
