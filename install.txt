@@ -165,7 +165,7 @@ destemail = login@student.42.fr
 sender = root@roger-skyline.fr
 
 # SSH
-# 3 retry ? > Ban for 15 minutes
+# 3 retry ? Ban for 15 minutes
 [ssh]
 enabled		= true
 port		= ssh
@@ -175,75 +175,22 @@ maxretry	= 3
 bantime		= 900
 
 # Protect against DOS attack
-# 360 requests in 2 mim > Ban for 10 minutes
+# 360 requests in 2 min ? Ban for 10 minutes
 [http-get-dos]
 enabled		= true
 port		= http,https
 filter		= http-get-dos
+action		= iptables[name=HTTP, port=http, protocol=tcp]
 logpath		= /var/log/apache2/access.log
 maxretry	= 360
 findtime	= 120
-action		= iptables[name=HTTP, port=http, protocol=tcp]
 bantime		= 600
-
-[apache]
-enabled		= true
-port		= http, https
-filter		= apache-auth
-logpath		= /var/log/apache2*/*error.log
-bantime		= 600
-maxretry	= 3
-findtime	= 600
-
-[apache-noscript]
-enabled		= true
-port		= http,https
-filter		= apache-noscript
-logpath		= /var/log/apache2/*error.log
-bantime		= 600
-maxretry	= 3
-findtime	= 600
-
-[apache-overflows]
-enabled		= true
-port		= http,https
-filter		= apache-overflows
-logpath		= /var/log/apache2*/*error.log
-bantime		= 600
-maxretry	= 2
-findtime	= 600
-
-[apache-badbots]
-enabled		= true
-port		= http,https
-filter		= apache-badbots
-logpath		= /var/log/apache2*/*error.log
-bantime		= 600
-maxretry	= 2
-findtime	= 600
-
-[apache-dos]
-enbled		= true
-port		= http,https
-filter		= apache-dos
-logpath		= /var/log/apache2/access.log
-bantime		= 600
-maxretry	= 300
-findtime	= 300
-action		= iptables[name=HTTP, port=http, protocol=tcp]
 ```````````````````````````````````````````````````````````````````````````````
 
 /etc/fail2ban/filter.d/http-get-dos.conf
 ```````````````````````````````````````````````````````````````````````````````
 [Definition]
 failregex = ^<HOST>.*« GET
-ignoreregex =
-```````````````````````````````````````````````````````````````````````````````
-
-/etc/fail2ban/filter.d/apache-dos.conf
-```````````````````````````````````````````````````````````````````````````````
-[Definition]
-failregex = ^<HOST> -.*"(GET|POST).*
 ignoreregex =
 ```````````````````````````````````````````````````````````````````````````````
 
@@ -283,7 +230,6 @@ Unblock machine :
 `systemctl list-units-files | grep enabled`
 `sudo systemctl disable XXXXXXX`
 
-apache2.service #Necessary for Web part
 autovt@.service #Necessary for using virtual terminals
 console-setup.service #Configuration for the console
 cron.service #Scheduled tasks
