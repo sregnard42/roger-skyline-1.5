@@ -49,7 +49,7 @@ Software selection :
 
 Log in as the non-root user
 `su` to log in as root
-`apt-get install sudo vim fail2ban apache2 -y`
+`apt-get install sudo vim git fail2ban apache2 -y`
 `vi /etc/sudoers`
 Add to the file :
 ```````````````````````````````````````````````````````````````````````````````
@@ -243,12 +243,16 @@ ignoreregex =
 https://wiki.debian-fr.xyz/Portsentry
 
 /etc/portsentry/portsentry.conf
+```````````````````````````````````````````````````````````````````````````````
 BLOCK_UDP="1"
 BLOCK_TCP="1"
+```````````````````````````````````````````````````````````````````````````````
 
 /etc/default/portsentry
+```````````````````````````````````````````````````````````````````````````````
 TCP_MODE="atcp"
 UDP_MODE="audp"
+```````````````````````````````````````````````````````````````````````````````
 
 Test scanning from another machine :
 - `nmap -v -PN -p 0-2000,60000 TARGET_IP`
