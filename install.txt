@@ -49,7 +49,7 @@ Software selection :
 
 Log in as the non-root user
 `su` to log in as root
-`apt-get install sudo vim git fail2ban apache2 -y`
+`apt-get install sudo vim fail2ban -y`
 `vi /etc/sudoers`
 Add to the file :
 ```````````````````````````````````````````````````````````````````````````````
