@@ -24,13 +24,13 @@ iptables -A OUTPUT	-p udp		--dport	53			-j ACCEPT
 # SSH
 iptables -A INPUT	-p tcp		--dport	2222			-j ACCEPT
 
-# HHTP
+# HTTP
 iptables -A OUTPUT 	-p tcp		--dport	80			-j ACCEPT
 
-# HHTPS
+# HTTPS
 iptables -A OUTPUT	-p tcp		--dport	443			-j ACCEPT
 
-# Ping
+# Outgoing ping
 iptables -A OUTPUT	-p icmp		--icmp-type echo-request	-j ACCEPT
 iptables -A INPUT	-p icmp		--icmp-type echo-reply		-j ACCEPT
 
