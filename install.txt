@@ -167,9 +167,9 @@ sender = root@roger-skyline.fr
 # 3 retry ? Ban for 15 minutes
 [ssh]
 enabled		= true
-port		= ssh
+port		= 2222
 filter		= sshd
-action		= iptables[name=SSH, port=ssh, protocol=tcp]
+action		= iptables[name=SSH, port=2222, protocol=tcp]
 maxretry	= 3
 bantime		= 900
 ```````````````````````````````````````````````````````````````````````````````
