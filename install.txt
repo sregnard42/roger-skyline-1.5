@@ -249,7 +249,7 @@ apt-get update && apt-get upgrade
 :: Cron Script ::
 :::::::::::::::::
 
-observe_cron.sh
+observer_cron.sh
 ```````````````````````````````````````````````````````````````````````````````
 #!/bin/bash
 
@@ -280,5 +280,5 @@ Write your own mail content in observer_cron_mail.txt
 
 /etc/crontab
 ```````````````````````````````````````````````````````````````````````````````
-0 0	* * *	root	/etc/init.d/observe_cron.sh
+0 0	* * *	root	/etc/init.d/observer_cron.sh
 ```````````````````````````````````````````````````````````````````````````````
