@@ -214,7 +214,7 @@ Unblock machine :
 :: Services ::
 ::::::::::::::
 
-`systemctl list-units-files | grep enabled`
+`systemctl list-unit-files | grep enabled`
 `sudo systemctl disable XXXXXXX`
 
 autovt@.service #Necessary for using virtual terminals
