@@ -104,88 +104,38 @@ Client side :
 :: Firewall ::
 ::::::::::::::
 
-`sudo iptables -L`
-
-https://doc.ubuntu-fr.org/iptables
-https://wiki.debian.org/iptables
-
-/etc/network/if-pre-up.d/iptables
-```````````````````````````````````````````````````````````````````````````````
-#!/bin/bash
-
-# Reset rules
-iptables		-F
-iptables		-X
-iptables -t nat		-F
-iptables -t nat		-X
-iptables -t mangle	-F
-iptables -t mangle	-X
-
-# Drop everything as default behavior
-iptables -P INPUT	DROP
-iptables -P OUTPUT	DROP
-iptables -P FORWARD 	DROP
-
-# Loopback
-iptables -A INPUT	-i lo						-j ACCEPT
-iptables -A OUTPUT	-o lo						-j ACCEPT
-
-# DNS
-iptables -A OUTPUT	-p tcp		--dport	53			-j ACCEPT
-iptables -A OUTPUT	-p udp		--dport	53			-j ACCEPT
-
-# SSH
-iptables -A INPUT	-p tcp		--dport	2222			-j ACCEPT
-
-# HTTP
-iptables -A OUTPUT 	-p tcp		--dport	80			-j ACCEPT
-
-# HTTPS
-iptables -A OUTPUT	-p tcp		--dport	443			-j ACCEPT
-
-# Ping
-iptables -A OUTPUT	-p icmp		--icmp-type echo-request	-j ACCEPT
-iptables -A INPUT	-p icmp		--icmp-type echo-reply		-j ACCEPT
-
-# Already established connections
-iptables -A INPUT	-m conntrack	--ctstate ESTABLISHED,RELATED	-j ACCEPT
-iptables -A OUTPUT	-m conntrack	--ctstate ESTABLISHED,RELATED	-j ACCEPT
-```````````````````````````````````````````````````````````````````````````````
-
-`sudo chmod +x /etc/network/if-pre-up.d/iptables`
-`sudo /etc/network/if-pre-up.d/iptables`
-`sudo iptables -L`
+`apt-get install ufw -y`
+`sudo ufw allow 2222` #open ssh port
+`sudo ufw enable` #activate firewall
+`sudo ufw status` #check status
+`sudo ufw allow XXXX` #open XXXX port
 
 :::::::::
 :: DOS ::
 :::::::::
 
-http://viruslocker.free.fr/?page_id=728
+`apt-get install fail2ban -y`
 
 /etc/fail2ban/jail.local
 ```````````````````````````````````````````````````````````````````````````````
-[DEFAULT]
-destemail = login@student.42.fr
-sender = root@roger-skyline.fr
+[sshd]
 
-# SSH
-# 3 retry ? Ban for 15 minutes
-[ssh]
 enabled		= true
 port		= 2222
-filter		= sshd
-action		= iptables[name=SSH, port=2222, protocol=tcp]
+logpath		= %(sshd_log)s
+backend		= %(sshd_backend)s
 maxretry	= 3
-bantime		= 900
+bantime		= 10
 ```````````````````````````````````````````````````````````````````````````````
 
 `sudo service fail2ban restart`
+`sudo fail2ban-client status`
 
 :::::::::::::::::::::
 :: Scan protection ::
 :::::::::::::::::::::
 
-https://wiki.debian-fr.xyz/Portsentry
+`apt-get install portsentry -y`
 
 /etc/portsentry/portsentry.conf
 ```````````````````````````````````````````````````````````````````````````````
@@ -199,16 +149,17 @@ TCP_MODE="atcp"
 UDP_MODE="audp"
 ```````````````````````````````````````````````````````````````````````````````
 
+`sudo /etc/init.d/portsentry start`
+
 Test scanning from another machine :
-- `nmap -v -PN -p 0-2000,60000 TARGET_IP`
+- `nmap -v TARGET_IP`
+- `nmap -v -Pn -p 0-2000,60000 TARGET_IP`
 
 Check if said machine was blocked :
 - `cat /etc/hosts.deny`
-- `ip r`
 
 Unblock machine :
-- Remove a line in /etc/hosts.deny
-- `ip r del SENDER_IP`
+- Remove line in /etc/hosts.deny
 
 ::::::::::::::
 :: Services ::
@@ -217,17 +168,14 @@ Unblock machine :
 `systemctl list-unit-files | grep enabled`
 `sudo systemctl disable XXXXXXX`
 
+Mandatory :
 autovt@.service #Necessary for using virtual terminals
-console-setup.service #Configuration for the console
 cron.service #Scheduled tasks
 fail2ban.service #Protection against DOS
 getty@.service #Necessary for login
-keyboard-setup.service #Configuration for the keyboard
 networking.service #Network
 ssh.service #Needed for SSH connection
 sshd.service #Needed for SSH connection
-
-Everything else disabled
 
 :::::::::::::::::::
 :: Update Script ::
