@@ -14,7 +14,8 @@ Create VM :
 - Version : Debian (64-bit)
 
 Create a virtual hard disk :
-- VDI, Dynamically allocated, 8.00 GB
+- VDI, Dynamically allocated, 7.45 GiB = 8 GB		
+  	/!\ VirtualBox displays GB while in reality it uses GiB, be careful /!\
 - Path : /sgoinfre/goinfre/Perso/$USER/debian.vdi
 
 Settings -> Network -> Attached to: Bridged Adapter.
@@ -31,7 +32,8 @@ Choose a root password
 Create a non-root user
 Partition :
 	- Manual
-	- 4.2 GB on Mount point `/` (shows as 4.2G with `sudo fdisk -l --bytes`)
+	- 4.2 GB on Mount point `/` 
+	  	/!\ Shows as 4.2G with `sudo fdisk -l --bytes` /!\ `sudo fdisk -l` gives results in GiB, not GB /!\	  
 	- 1.0 GB as swap area
 	- 3.4 GB on Mount point `/home`
 Finish partitioning
