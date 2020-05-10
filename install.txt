@@ -35,7 +35,7 @@ Partition :
 	- 4.2 GB on Mount point `/` 
 	  	/!\ Shows as 4.2G with `sudo fdisk -l --bytes` /!\ `sudo fdisk -l` gives results in GiB, not GB /!\	  
 	- 1.0 GB as swap area
-	- 3.4 GB on Mount point `/home`
+	- 2.8 GB on Mount point `/home`
 Finish partitioning
 Software selection :
 	- SSH server
