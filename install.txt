@@ -178,6 +178,7 @@ getty@.service #Necessary for login
 networking.service #Network
 ssh.service #Needed for SSH connection
 sshd.service #Needed for SSH connection
+ufw.service #Needed for firewall
 
 :::::::::::::::::::
 :: Update Script ::
