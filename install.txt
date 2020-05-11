@@ -224,10 +224,11 @@ diff=`expr $diff / 24`
 # or
 # Has the file been modified in the last 24 hours ?
 if [ $diff -lt 1 ]; then
-	`sudo sendmail root@debian < /etc/init.d/observer_cron_mail.txt`
+	`sudo sendmail user@hostname < /etc/init.d/observer_cron_mail.txt`
 fi
 ```````````````````````````````````````````````````````````````````````````````
 `sudo chmod +x /etc/init.d/observer_cron.sh`
+`sudo apt-get install sendmail mailutils -y`
 
 Write your own mail content in observer_cron_mail.txt
 
