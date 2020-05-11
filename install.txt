@@ -101,6 +101,7 @@ VM :
 Host :
 - `ssh-copy-id -i ~/.ssh/id_rsa.pub username@hostIP -p 2222`
 - `ssh username@hostIP -p 2222`
+- `sudo service sshd restart`
 
 VM :
 - `sudo vi /etc/ssh/sshd_config`
@@ -181,8 +182,10 @@ cron.service #Scheduled tasks
 fail2ban.service #Protection against DOS
 getty@.service #Necessary for login
 networking.service #Network
+rsyslog.service #Needed for connexion attempts
 ssh.service #Needed for SSH connection
 sshd.service #Needed for SSH connection
+syslog.service #Needed for connexion attempts
 ufw.service #Needed for firewall
 
 :::::::::::::::::::
