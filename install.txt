@@ -227,7 +227,7 @@ if [ $diff -lt 1 ]; then
 	`sudo sendmail root@debian < /etc/init.d/observer_cron_mail.txt`
 fi
 ```````````````````````````````````````````````````````````````````````````````
-`sudo chmod +x /etc/init.d/update_script.sh`
+`sudo chmod +x /etc/init.d/observer_cron.sh`
 
 Write your own mail content in observer_cron_mail.txt
 
