@@ -91,16 +91,20 @@ dns-nameservers is the same for cluster 1, 2 and 3
 :: SSH ::
 :::::::::
 
-Server side :
+VM :
 - `sudo vi /etc/ssh/sshd_config`
 - Uncomment 'Port 22' and replace it by 'Port 2222'
 - Uncomment 'PermitRootLogin' and replace 'prohibit-password' by 'no'
 - Uncomment 'PubkeyAuthentication yes'
 - `sudo service sshd restart`
 
-Client side :
+Host :
 - `ssh-copy-id -i ~/.ssh/id_rsa.pub username@hostIP -p 2222`
 - `ssh username@hostIP -p 2222`
+
+VM :
+- `sudo vi /etc/ssh/sshd_config`
+- Uncomment 'PasswordAuthentification' and replace 'yes' by 'no'
 
 ::::::::::::::
 :: Firewall ::
@@ -128,6 +132,7 @@ logpath		= %(sshd_log)s
 backend		= %(sshd_backend)s
 maxretry	= 3
 bantime		= 10
+banaction	= ufw
 ```````````````````````````````````````````````````````````````````````````````
 
 `sudo service fail2ban restart`
