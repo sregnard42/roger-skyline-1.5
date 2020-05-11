@@ -190,17 +190,18 @@ ufw.service #Needed for firewall
 @reboot		root    /etc/init.d/update_script.sh >> /var/log/update_script.log
 ```````````````````````````````````````````````````````````````````````````````
 
-update_script.sh :
+/etc/init.d/update_script.sh :
 ```````````````````````````````````````````````````````````````````````````````
 #! /bin/bash
 apt-get update && apt-get upgrade
 ```````````````````````````````````````````````````````````````````````````````
+`sudo chmod +x /etc/init.d/update_script.sh`
 
 :::::::::::::::::
 :: Cron Script ::
 :::::::::::::::::
 
-observer_cron.sh
+/etc/init.d/observer_cron.sh
 ```````````````````````````````````````````````````````````````````````````````
 #!/bin/bash
 
@@ -226,6 +227,7 @@ if [ $diff -lt 1 ]; then
 	`sudo sendmail root@debian < /etc/init.d/observer_cron_mail.txt`
 fi
 ```````````````````````````````````````````````````````````````````````````````
+`sudo chmod +x /etc/init.d/update_script.sh`
 
 Write your own mail content in observer_cron_mail.txt
 
