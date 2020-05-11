@@ -132,9 +132,10 @@ port		= 2222
 logpath		= %(sshd_log)s
 backend		= %(sshd_backend)s
 maxretry	= 3
-bantime		= 10
+bantime		= 60
 banaction	= ufw
 ```````````````````````````````````````````````````````````````````````````````
+After 3 failed attempts, banned for 60 seconds. Banned IP is rejected by ufw.
 
 `sudo service fail2ban restart`
 `sudo fail2ban-client status`
